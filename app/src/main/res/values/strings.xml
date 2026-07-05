@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Volume Skip</string>
+    <string name="service_summary">Hold volume buttons to skip tracks</string>
+    <string name="service_description">Lets you hold volume-up to skip to the next track and volume-down to go to the previous track while audio is playing, even with the screen off. Short presses change the volume as usual. This service only reads volume button presses; it does not read screen content.</string>
+    <string name="status_enabled">Service is ON ✓</string>
+    <string name="status_disabled">Service is OFF</string>
+    <string name="enable_service">Enable in Accessibility settings</string>
+    <string name="open_settings">Open Accessibility settings</string>
+    <string name="instructions">While audio is playing:\n\n• Hold volume-up → next track\n• Hold volume-down → previous track\n• Short press → normal volume change\n\nWorks with the screen off. When nothing is playing, the volume buttons behave normally.</string>
+</resources>
