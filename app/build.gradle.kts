@@ -11,8 +11,8 @@ android {
         applicationId = "dev.ben.volumeskip"
         minSdk = 29
         targetSdk = 35
-        versionCode = 1
-        versionName = "1.0.0" // x-release-please-version
+        versionCode = (System.getenv("VERSION_CODE") ?: "1").toInt()
+        versionName = System.getenv("VERSION_NAME") ?: "0.0.0"
     }
 
     buildTypes {
