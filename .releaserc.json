@@ -1,0 +1,21 @@
+{
+  "branches": ["main"],
+  "plugins": [
+    "@semantic-release/commit-analyzer",
+    "@semantic-release/release-notes-generator",
+    [
+      "@semantic-release/exec",
+      {
+        "prepareCmd": "VERSION_NAME=${nextRelease.version} ./gradlew assembleDebug --no-daemon --stacktrace && cp app/build/outputs/apk/debug/app-debug.apk volume-skip-v${nextRelease.version}.apk"
+      }
+    ],
+    [
+      "@semantic-release/github",
+      {
+        "assets": [
+          { "path": "volume-skip-v*.apk", "label": "Volume Skip APK" }
+        ]
+      }
+    ]
+  ]
+}

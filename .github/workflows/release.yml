@@ -6,6 +6,8 @@ on:
 
 permissions:
   contents: write
+  issues: write
+  pull-requests: write
 
 jobs:
   release:
@@ -15,41 +17,19 @@ jobs:
         with:
           fetch-depth: 0
 
-      # Read conventional commits since the last tag and, if a release is
-      # warranted (feat/fix/BREAKING), create + push the next version tag.
-      - name: Compute next version
-        id: tag
-        uses: mathieudutour/github-tag-action@v6.2
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          release_branches: main
-          default_bump: false
-
       - uses: actions/setup-java@v4
-        if: steps.tag.outputs.new_tag
         with:
           distribution: temurin
           java-version: '17'
           cache: gradle
 
-      - name: Build APK
-        if: steps.tag.outputs.new_tag
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Semantic release
         env:
-          VERSION_NAME: ${{ steps.tag.outputs.new_version }}
-          VERSION_CODE: ${{ github.run_number }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           chmod +x gradlew
-          ./gradlew assembleDebug --no-daemon --stacktrace
-          cp app/build/outputs/apk/debug/app-debug.apk "volume-skip-${{ steps.tag.outputs.new_tag }}.apk"
-
-      - name: Publish GitHub Release
-        if: steps.tag.outputs.new_tag
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          TAG: ${{ steps.tag.outputs.new_tag }}
-          NOTES: ${{ steps.tag.outputs.changelog }}
-        run: |
-          printf '%s\n' "$NOTES" > notes.md
-          gh release create "$TAG" "volume-skip-${TAG}.apk" \
-            --title "Volume Skip ${TAG}" \
-            --notes-file notes.md
+          npx --yes -p semantic-release@24 -p @semantic-release/exec@6 semantic-release
